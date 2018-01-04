@@ -1,0 +1,317 @@
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-size: 16px;
+    font-family: 'Open Sans', sans-serif;
+    padding: 0;
+    margin: 0;
+    color: #000;
+}
+header {
+    padding: 20px;
+    /* border-bottom: 2px solid #000; */
+}
+
+.logo_and_nav {
+    border-bottom: 2px solid rgba(0,0,0,0.03);
+    padding-bottom: 20px;
+}
+
+.logo {
+    background: url('/images/cointrace_logo.svg') no-repeat;
+    width: 100px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.navigation {
+    display: inline-block;
+    margin-left: 60px;
+}
+.navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.navigation ul li {
+    display: inline-block;
+    margin-right: 60px;
+    vertical-align: middle;
+    position: relative;
+    z-index: 1;
+}
+.navigation a {
+    text-decoration: none;
+    color: rgba(0,0,0,0.5);
+}
+.navigation a:hover {
+    color: #000;
+}
+.navigation .nav_selected a {
+    color: rgba(0,0,0,1);
+    font-weight: 600;
+}
+/* .nav_selected::before {
+    content: "";
+    width: calc(100% + 4px);
+    height: 4px;
+    background: #78E9FF;
+    position: absolute;
+    bottom: 2px;
+    left: -2px;
+    z-index: -1;
+    border-radius: 2px;
+} */
+
+.creator {
+    float: right;
+    display: inline-block;
+    font-size: 12px;
+}
+.creator a {
+    color: rgba(0,0,0,0.7);
+    text-decoration: none;
+    font-weight: 600;
+}
+.creator a:hover {
+    color: rgba(0,0,0,1);
+}
+
+.view_options {
+    color: rgba(0,0,0,0.5);
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 15px 0 0 0;
+    font-size: 14px;
+}
+
+.view_options li {
+    display: inline-block;
+    margin-right: 40px;
+}
+
+
+/* ------ Main Content ------ */
+
+.main_container {
+    padding: 10px 10px 300px 10px;
+    overflow: auto;
+    float: none;
+    min-height: 100vh;
+}
+
+.currency_placeholder {
+    width: calc(20% - 20px);
+    background: rgba(0, 0, 0, 0.03);
+    margin: 10px;
+    text-align: center;
+    border-radius: 2px;
+    position: relative;
+    float: left;
+    min-height: 210px;
+}
+.currency_placeholder:hover {
+    background: white;
+    transition: all ease-in-out 0.15s;
+}
+.currency_placeholder:hover .currency_container {
+    background: white;
+    box-shadow: 0 2px 10px 1px rgba(0,0,0,0.07);
+    padding-bottom: 20px;
+    position: absolute;
+    transition: all ease-in-out 0.15s;
+}
+.currency_placeholder:hover .currency_details_list{
+    display: block;
+}
+.currency_placeholder:hover .currency_name::after {
+    display: inline-block;
+}
+.currency_placeholder:hover .currency_name, .currecny_price {
+    overflow: auto;
+    text-overflow: ellipsis;
+    white-space: initial;
+}
+
+.currency_name, .currecny_price {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+}
+
+.currency_name {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.currency_name::after {
+    content: attr(data-coin-symbol);
+    margin-left: 10px;
+    font-size: 16px;
+    color: rgba(0,0,0,0.5);
+    display: none;
+}
+
+.currecny_price {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.currency_change_in_price {
+    font-size: 14px;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.up_change {
+    background: rgba(0,160,40, 0.1);
+    color: rgba(0,160,40, 1);
+}
+
+.down_change {
+    background: rgba(255,60,60, 0.1);
+    color: rgba(255,60,60, 1);
+}
+
+
+
+/* Currency Details */
+
+.currency_container {
+    border-radius: 2px;
+    width: 100%;
+    padding: 50px 20px;
+    z-index: 2;
+}
+
+.currency_container::before {
+    content: attr(data-currency-rank);
+    font-size: 14px;
+    color: rgba(0,0,0,0.3);
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.currency_details_list {
+    list-style: none;
+    margin: 20px 0 0 0;
+    padding: 20px 0 0 0;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    text-align: left;
+    display: none;
+}
+
+.currency_details_list li {
+    margin-bottom: 20px;
+}
+.currency_details_list li::before {
+    content: attr(data-title);
+    width: 100%;
+    display: block;
+    font-size: 12px;
+    color: rgba(0,0,0,0.5);
+}
+
+
+/* Footer */
+
+footer {
+    background:rgba(0,0,0,0.03);
+    width: 100%;
+    padding: 40px 20px 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.footer_container {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.footer_logo {
+    background: url('/images/cointrace_logo.svg') no-repeat;
+    width: 100px;
+    height: 24px;
+    margin: 0 auto 40px;
+}
+
+.footer_text b {
+    font-weight: 600;
+}
+
+.footer_text a {
+    color: black;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+}
+.footer_text a::before {
+    content: "";
+    width: calc(100%);
+    height: 2px;
+    background: #78E9FF;
+    position: absolute;
+    bottom: 2px;
+    left: 0px;
+    z-index: -1;
+    border-radius: 2px;
+    transition: all ease-in-out 0.15s;
+}
+.footer_text a:hover::before{
+    bottom: 0px;
+    transition: all ease-in-out 0.15s;
+}
+
+
+
+
+/* Responsive breakpoints */
+@media screen and (max-width: 1100px) {
+    .currency_placeholder {
+        width: calc(25% - 20px);
+    }
+}
+@media screen and (max-width: 960px) {
+    .currency_placeholder {
+        width: calc(33.33% - 20px);
+    }
+}
+
+/* ======= TO DO ======= */
+/*
+[DONE] Clickable Logo
+[DONE] Footer with credits
+ - Creator
+ - Donation Wallets
+ - API Credits
+ - Suggestions email
+
+[DONE] Use new logo
+[DONE] Favicons
+
+[ ] Make responsive
+[ ] GitHub
+[ ] CloudFront
+[ ] Social Media Icons
+[ ] Share on Twitter
+
+Next Update:
+[ ] Add currency logos (https://github.com/allienworks/cryptocoins)
+[ ] About page
+    - Creator
+    - Credits
+    - Donation wallets
+[ ] Loading animation + skeletons
+*/
