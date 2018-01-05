@@ -118,6 +118,7 @@ header {
     position: relative;
     float: left;
     min-height: 210px;
+    min-width: 250px;
 }
 .currency_placeholder:hover {
     background: white;
@@ -283,35 +284,8 @@ footer {
         width: calc(25% - 20px);
     }
 }
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 800px) {
     .currency_placeholder {
         width: calc(33.33% - 20px);
     }
 }
-
-/* ======= TO DO ======= */
-/*
-[DONE] Clickable Logo
-[DONE] Footer with credits
- - Creator
- - Donation Wallets
- - API Credits
- - Suggestions email
-
-[DONE] Use new logo
-[DONE] Favicons
-
-[ ] Make responsive
-[ ] GitHub
-[ ] CloudFront
-[ ] Social Media Icons
-[ ] Share on Twitter
-
-Next Update:
-[ ] Add currency logos (https://github.com/allienworks/cryptocoins)
-[ ] About page
-    - Creator
-    - Credits
-    - Donation wallets
-[ ] Loading animation + skeletons
-*/
