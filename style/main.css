@@ -19,6 +19,13 @@ header {
     /* border-bottom: 2px solid #000; */
 }
 
+h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+}
+
 .logo_and_nav {
     border-bottom: 2px solid rgba(0,0,0,0.03);
     padding-bottom: 20px;
@@ -35,6 +42,7 @@ header {
 .navigation {
     display: inline-block;
     margin-left: 60px;
+    vertical-align: -webkit-baseline-middle;
 }
 .navigation ul {
     list-style: none;
@@ -238,28 +246,47 @@ footer {
 }
 
 .footer_container {
-    width: 300px;
+    max-width: 300px;
     margin: 0 auto;
+}
+
+.footer_logo_and_creator_container {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding-bottom: 20px;
 }
 
 .footer_logo {
     background: url('/images/cointrace_logo.svg') no-repeat;
     width: 100px;
     height: 24px;
-    margin: 0 auto 40px;
+    margin: 0 auto 20px;
+}
+
+.footer_creator {
+    
+}
+
+.footer_text {
+    text-align: left;
+    padding: 20px 0;
+}
+
+.footer_text h3 {
+    margin-top: 20px;
+    text-align: center;
 }
 
 .footer_text b {
     font-weight: 600;
 }
 
-.footer_text a {
+.footer_container a {
     color: black;
     font-weight: 600;
     text-decoration: none;
     position: relative;
 }
-.footer_text a::before {
+.footer_container a::before {
     content: "";
     width: calc(100%);
     height: 2px;
@@ -271,11 +298,16 @@ footer {
     border-radius: 2px;
     transition: all ease-in-out 0.15s;
 }
-.footer_text a:hover::before{
+.footer_container a:hover::before{
     bottom: 0px;
     transition: all ease-in-out 0.15s;
 }
-
+.credits {
+    text-align: left;
+    padding: 20px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
 
 
 
@@ -300,6 +332,14 @@ footer {
     .currency_placeholder {
         width: calc(50% - 20px);
     }
+    .navigation {
+        margin: 20px 0 0 0;
+        width: 100%;
+        text-align: left;
+    }
+    .navigation ul li {
+        margin-right: 20px;
+    }
 }
 
 /* Mobile phones */
@@ -307,4 +347,14 @@ footer {
     .currency_placeholder {
         width: calc(100% - 20px);
     }
+    .creator {
+        display: none;
+    }
+    .logo_and_nav {
+        text-align: center;
+    }
+    .logo {
+        margin: 0 auto;
+    }
+    
 }
