@@ -107,18 +107,19 @@ header {
     overflow: auto;
     float: none;
     min-height: 100vh;
+    text-align: center;
 }
 
 .currency_placeholder {
-    width: calc(20% - 20px);
+    width: 260px;
+    min-height: 210px;
     background: rgba(0, 0, 0, 0.03);
     margin: 10px;
     text-align: center;
     border-radius: 2px;
     position: relative;
-    float: left;
-    min-height: 210px;
-    
+    display: inline-block;
+    vertical-align: top;
 }
 .currency_placeholder:hover {
     background: white;
@@ -279,37 +280,17 @@ footer {
 
 
 /* Responsive breakpoints */
-@media screen and (min-width: 1620px) {
-    .currency_placeholder {
-        width: calc(16.6666666667% - 20px);
-    }
-    header {
-        max-width: 1620px;
-        margin: 0 auto;
-    }
-    .main_container {
-        max-width: 1620px;
-        margin: 0 auto;
-    }
-}
 
-@media screen and (max-width: 1350px) {
+@media screen and (min-width: 1440px) {
     .currency_placeholder {
         width: calc(20% - 20px);
     }
-}
-@media screen and (max-width: 1080px) {
-    .currency_placeholder {
-        width: calc(25% - 20px);
+    header {
+        max-width: 1440px;
+        margin: 0 auto;
     }
-}
-@media screen and (max-width: 810px) {
-    .currency_placeholder {
-        width: calc(33.33% - 20px);
-    }
-}
-@media screen and (max-width: 540px) {
-    .currency_placeholder {
-        width: calc(50% - 20px);
+    .main_container {
+        max-width: 1440px;
+        margin: 0 auto;
     }
 }
