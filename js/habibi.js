@@ -3,44 +3,7 @@
 // });
 
 
-var request = new XMLHttpRequest();
-request.open('GET', 'https://api.coinmarketcap.com/v1/ticker/', true);
-
 var currencyInfo;
-
-request.onload = function() {
-  if (this.status >= 200 && this.status < 400) {
-    // Success!
-    currencyInfo = JSON.parse(this.response);
-    loadCoins();
-  } else {
-    // We reached our target server, but it returned an error
-    console.log("The server doesn't love us! 💔");
-  }
-};
-
-request.onerror = function() {
-  // There was a connection error of some sort
-  console.log('Connection error! 🖥');
-};
-
-request.send();
-
-
-function loadCoins() {
-    for (let i = 0; i < currencyInfo.length; i++) {
-        addCurrency(
-            currencyInfo[i].rank,
-            currencyInfo[i].symbol,
-            currencyInfo[i].name,
-            currencyInfo[i].price_usd,
-            currencyInfo[i].percent_change_24h,
-            currencyInfo[i].market_cap_usd,
-            currencyInfo[i]["24h_volume_usd"],
-            currencyInfo[i].available_supply
-        );
-    }
-}
 
 // Add commas to long numbers
 function addCommas(num) {
@@ -48,6 +11,15 @@ function addCommas(num) {
 }
 
 
+// Hide loading animation
+function hideLoading() {
+    var loadingSpinner = document.querySelector('.loading_spinner');
+    loadingSpinner.style.display = "none";
+}
+
+
+
+// Add currency block
 function addCurrency(rank, symbol, currencyName, price, changeInPrice, marketCap, volume24h, circulatingSupply) {
     // Creating all HTML elements
     var mainContainerDiv = document.querySelector('.main_container');
@@ -108,4 +80,43 @@ function addCurrency(rank, symbol, currencyName, price, changeInPrice, marketCap
     mainContainerDiv.appendChild(currencyPlaceholderDiv);
 }
 
+function loadCoins() {
+    for (let i = 0; i < currencyInfo.length; i++) {
+        addCurrency(
+            currencyInfo[i].rank,
+            currencyInfo[i].symbol,
+            currencyInfo[i].name,
+            currencyInfo[i].price_usd,
+            currencyInfo[i].percent_change_24h,
+            currencyInfo[i].market_cap_usd,
+            currencyInfo[i]["24h_volume_usd"],
+            currencyInfo[i].available_supply
+        );
+    }
+}
 
+
+
+
+// Getting the coins from the API
+var request = new XMLHttpRequest();
+request.open('GET', 'https://api.coinmarketcap.com/v1/ticker/', true);
+
+request.onload = function() {
+  if (this.status >= 200 && this.status < 400) {
+    // Success!
+    currencyInfo = JSON.parse(this.response);
+    loadCoins();
+    hideLoading();
+  } else {
+    // We reached our target server, but it returned an error
+    console.log("The server doesn't love us! 💔");
+  }
+};
+
+request.onerror = function() {
+  // There was a connection error of some sort
+  console.log('Connection error! 🖥');
+};
+
+request.send();

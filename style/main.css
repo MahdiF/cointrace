@@ -118,6 +118,62 @@ h3 {
     text-align: center;
 }
 
+
+
+.loading_spinner {
+    /* background: #F7F7F7; */
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin: 40px auto;
+}  
+.loading_spinner::before, .loading_spinner::after {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    content: "";
+    position: absolute;
+}
+.loading_spinner::before {
+    bottom: 0;
+    right: 0;
+    background: #78E9FF;
+    animation: bottom_right_animation 0.5s alternate infinite ease-in-out;
+}
+.loading_spinner::after {
+    top: 0;
+    left: 0;
+    background: #000000;
+    animation: top_left_animation 0.5s 0.2s alternate infinite ease-in-out;
+}
+  
+  @keyframes top_left_animation {
+    0% {
+      top: 0;
+      left: 0;
+    }
+    100% {
+      top: 10%;
+      left: 10%;
+    }
+  }
+  @keyframes bottom_right_animation {
+    0% {
+      bottom: 0;
+      right: 0;
+    }
+    100% {
+      bottom: 10%;
+      right: 10%;
+    }
+  }
+
+
+
+
+
+
+
 .currency_placeholder {
     width: 250px;
     min-height: 210px;
