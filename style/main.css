@@ -118,7 +118,7 @@ header {
     position: relative;
     float: left;
     min-height: 210px;
-    min-width: 250px;
+    
 }
 .currency_placeholder:hover {
     background: white;
@@ -279,13 +279,37 @@ footer {
 
 
 /* Responsive breakpoints */
-@media screen and (max-width: 1100px) {
+@media screen and (min-width: 1620px) {
+    .currency_placeholder {
+        width: calc(16.6666666667% - 20px);
+    }
+    header {
+        max-width: 1620px;
+        margin: 0 auto;
+    }
+    .main_container {
+        max-width: 1620px;
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 1350px) {
+    .currency_placeholder {
+        width: calc(20% - 20px);
+    }
+}
+@media screen and (max-width: 1080px) {
     .currency_placeholder {
         width: calc(25% - 20px);
     }
 }
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 810px) {
     .currency_placeholder {
         width: calc(33.33% - 20px);
+    }
+}
+@media screen and (max-width: 540px) {
+    .currency_placeholder {
+        width: calc(50% - 20px);
     }
 }
