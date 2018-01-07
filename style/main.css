@@ -111,7 +111,7 @@ header {
 }
 
 .currency_placeholder {
-    width: 260px;
+    width: 250px;
     min-height: 210px;
     background: rgba(0, 0, 0, 0.03);
     margin: 10px;
@@ -280,7 +280,7 @@ footer {
 
 
 /* Responsive breakpoints */
-
+/* Desktop computers */
 @media screen and (min-width: 1440px) {
     .currency_placeholder {
         width: calc(20% - 20px);
@@ -292,5 +292,19 @@ footer {
     .main_container {
         max-width: 1440px;
         margin: 0 auto;
+    }
+}
+
+/* Small tablets */
+@media screen and (max-width: 640px) {
+    .currency_placeholder {
+        width: calc(50% - 20px);
+    }
+}
+
+/* Mobile phones */
+@media screen and (max-width: 410px){
+    .currency_placeholder {
+        width: calc(100% - 20px);
     }
 }
