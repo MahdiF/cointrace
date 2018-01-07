@@ -120,27 +120,27 @@ h3 {
 
 
 
-.loading_spinner {
+.loading_icon {
     /* background: #F7F7F7; */
     position: relative;
     width: 50px;
     height: 50px;
     margin: 40px auto;
 }  
-.loading_spinner::before, .loading_spinner::after {
+.loading_icon::before, .loading_icon::after {
     width: 80%;
     height: 80%;
     border-radius: 50%;
     content: "";
     position: absolute;
 }
-.loading_spinner::before {
+.loading_icon::before {
     bottom: 0;
     right: 0;
     background: #78E9FF;
     animation: bottom_right_animation 0.5s alternate infinite ease-in-out;
 }
-.loading_spinner::after {
+.loading_icon::after {
     top: 0;
     left: 0;
     background: #000000;

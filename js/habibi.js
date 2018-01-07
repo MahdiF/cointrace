@@ -13,8 +13,8 @@ function addCommas(num) {
 
 // Hide loading animation
 function hideLoading() {
-    var loadingSpinner = document.querySelector('.loading_spinner');
-    loadingSpinner.style.display = "none";
+    var loadingIcon = document.querySelector('.loading_icon');
+    loadingIcon.style.display = "none";
 }
 
 
