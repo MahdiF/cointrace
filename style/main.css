@@ -186,7 +186,6 @@ h3 {
     vertical-align: top;
 }
 .currency_placeholder:hover {
-    cursor: pointer;
     background: white;
     transition: all ease-in-out 0.15s;
 }
