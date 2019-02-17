@@ -1,8 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//   // Do after the document fully loaded
-// });
-
-
 var currencyInfo;
 
 // Add commas to long numbers
@@ -83,40 +78,28 @@ function addCurrency(rank, symbol, currencyName, price, changeInPrice, marketCap
 function loadCoins() {
     for (let i = 0; i < currencyInfo.length; i++) {
         addCurrency(
-            currencyInfo[i].rank,
+            currencyInfo[i].cmc_rank,
             currencyInfo[i].symbol,
             currencyInfo[i].name,
-            currencyInfo[i].price_usd,
-            currencyInfo[i].percent_change_24h,
-            currencyInfo[i].market_cap_usd,
-            currencyInfo[i]["24h_volume_usd"],
-            currencyInfo[i].available_supply
+            currencyInfo[i].quote['USD'].price,
+            currencyInfo[i].quote['USD'].percent_change_24h,
+            currencyInfo[i].quote['USD'].market_cap,
+            currencyInfo[i].quote['USD'].volume_24h,
+            currencyInfo[i].circulating_supply
         );
     }
 }
 
-
-
-
-// Getting the coins from the API
-var request = new XMLHttpRequest();
-request.open('GET', 'https://api.coinmarketcap.com/v1/ticker/', true);
-
-request.onload = function() {
-  if (this.status >= 200 && this.status < 400) {
-    // Success!
-    currencyInfo = JSON.parse(this.response);
+fetch('https://wt-a8bd1eeac04b708701f10580366ae4ac-0.sandbox.auth0-extend.com/coinmarketcap-api')
+  .then(response = (res) => {
+    return res.json()
+  })
+  .then(data = (response) => {
+    currencyInfo = response.data;
+    console.log(response.data);
     loadCoins();
     hideLoading();
-  } else {
-    // We reached our target server, but it returned an error
+  })
+  .catch(error = () => {
     console.log("The server doesn't love us! 💔");
-  }
-};
-
-request.onerror = function() {
-  // There was a connection error of some sort
-  console.log('Connection error! 🖥');
-};
-
-request.send();
+  });
