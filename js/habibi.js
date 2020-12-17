@@ -53,7 +53,7 @@ function addCurrency(rank, symbol, currencyName, price, changeInPrice, marketCap
     // Adding Values from the API
     currencyNameDiv.innerHTML = currencyName;
     priceDiv.innerHTML = "$" + addCommas(price);
-    changeInPriceDiv.innerHTML = changeInPrice + "%";
+    changeInPriceDiv.innerHTML = changeInPrice.toFixed(2) + "%";
     marketCapLi.innerHTML = addCommas(marketCap);
     volume24hLi.innerHTML = addCommas(volume24h);
     circulatingSupplyLi.innerHTML = addCommas(circulatingSupply);
