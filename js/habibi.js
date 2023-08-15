@@ -113,7 +113,6 @@ async function fetchData() {
 
     const data = await response.json();
     currencyInfo = data.data;
-    console.table(currencyInfo);
     loadCoins();
     hideLoading();
     return data.data;
