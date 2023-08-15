@@ -115,7 +115,6 @@ async function fetchData() {
     currencyInfo = data.data;
     loadCoins();
     hideLoading();
-    return data.data;
   } catch (error) {
     console.error("Error fetching data:", error);
     throw error;
