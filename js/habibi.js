@@ -2,6 +2,13 @@
 const API_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1";
 const REFRESH_INTERVAL = 60000; // 60 seconds
 
+// Rate limiting configuration
+const CACHE_KEY = 'cointrace-cache';
+const CACHE_DURATION = 60000;       // Cache valid for 60 seconds
+const MIN_REQUEST_INTERVAL = 2000;  // Minimum 2 seconds between requests
+const MAX_BACKOFF_TIME = 300000;    // Max backoff: 5 minutes
+const INITIAL_BACKOFF = 5000;       // Initial backoff: 5 seconds
+
 // === STATE ===
 var currencyInfo = [];
 var favorites = [];
@@ -11,6 +18,12 @@ var isInitialLoad = true;
 var refreshTimer = null;
 var lastUpdateTime = null;
 var updateTextInterval = null;
+
+// Rate limiting state
+var lastRequestTime = 0;
+var backoffTime = 0;
+var backoffTimer = null;
+var isRateLimited = false;
 
 
 // === UTILITY FUNCTIONS ===
@@ -29,6 +42,172 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
+}
+
+
+// === CACHE MANAGEMENT ===
+
+function getCachedData() {
+    try {
+        var cached = localStorage.getItem(CACHE_KEY);
+        if (!cached) return null;
+
+        var parsed = JSON.parse(cached);
+        var age = Date.now() - parsed.timestamp;
+
+        return {
+            data: parsed.data,
+            timestamp: parsed.timestamp,
+            age: age,
+            isExpired: age > CACHE_DURATION
+        };
+    } catch (e) {
+        console.error('Error reading cache:', e);
+        return null;
+    }
+}
+
+function setCachedData(data) {
+    try {
+        var cacheEntry = {
+            data: data,
+            timestamp: Date.now()
+        };
+        localStorage.setItem(CACHE_KEY, JSON.stringify(cacheEntry));
+    } catch (e) {
+        console.error('Error saving cache:', e);
+    }
+}
+
+function canMakeRequest() {
+    var now = Date.now();
+    var timeSinceLastRequest = now - lastRequestTime;
+
+    if (isRateLimited && backoffTime > 0) {
+        return false;
+    }
+
+    if (timeSinceLastRequest < MIN_REQUEST_INTERVAL) {
+        return false;
+    }
+
+    return true;
+}
+
+
+// === RATE LIMIT HANDLING ===
+
+function handleRateLimit() {
+    isRateLimited = true;
+
+    if (backoffTime === 0) {
+        backoffTime = INITIAL_BACKOFF;
+    } else {
+        backoffTime = Math.min(backoffTime * 2, MAX_BACKOFF_TIME);
+    }
+
+    showRateLimitMessage(backoffTime);
+
+    if (backoffTimer) {
+        clearTimeout(backoffTimer);
+    }
+
+    backoffTimer = setTimeout(function() {
+        isRateLimited = false;
+        hideRateLimitMessage();
+        refreshData();
+    }, backoffTime);
+
+    console.log('Rate limited. Retrying in ' + (backoffTime / 1000) + ' seconds');
+}
+
+function resetBackoff() {
+    backoffTime = 0;
+    isRateLimited = false;
+    if (backoffTimer) {
+        clearTimeout(backoffTimer);
+        backoffTimer = null;
+    }
+}
+
+function showRateLimitMessage(waitTime) {
+    var existingBanner = document.querySelector('.rate_limit_banner');
+    if (existingBanner) {
+        updateRateLimitCountdown(existingBanner, waitTime);
+        return;
+    }
+
+    var banner = document.createElement('div');
+    banner.className = 'rate_limit_banner';
+    banner.innerHTML = '<span class="rate_limit_icon">⏳</span> ' +
+        '<span class="rate_limit_text">API rate limit reached. Showing cached data. ' +
+        'Retrying in <span class="rate_limit_countdown">' + Math.ceil(waitTime / 1000) + '</span>s</span>';
+
+    var header = document.querySelector('header');
+    if (header) {
+        header.parentNode.insertBefore(banner, header.nextSibling);
+    }
+
+    startRateLimitCountdown(banner, waitTime);
+}
+
+function updateRateLimitCountdown(banner, waitTime) {
+    var countdownEl = banner.querySelector('.rate_limit_countdown');
+    if (countdownEl) {
+        countdownEl.textContent = Math.ceil(waitTime / 1000);
+    }
+    startRateLimitCountdown(banner, waitTime);
+}
+
+function startRateLimitCountdown(banner, waitTime) {
+    var countdownEl = banner.querySelector('.rate_limit_countdown');
+    if (!countdownEl) return;
+
+    // Clear any existing interval
+    if (banner.countdownInterval) {
+        clearInterval(banner.countdownInterval);
+    }
+
+    var remaining = Math.ceil(waitTime / 1000);
+
+    banner.countdownInterval = setInterval(function() {
+        remaining--;
+        if (remaining <= 0) {
+            clearInterval(banner.countdownInterval);
+            return;
+        }
+        countdownEl.textContent = remaining;
+    }, 1000);
+}
+
+function hideRateLimitMessage() {
+    var banner = document.querySelector('.rate_limit_banner');
+    if (banner) {
+        if (banner.countdownInterval) {
+            clearInterval(banner.countdownInterval);
+        }
+        banner.remove();
+    }
+}
+
+function showStaleDataMessage(age) {
+    var minutes = Math.floor(age / 60000);
+    var ageText = minutes > 0 ? minutes + ' minute' + (minutes > 1 ? 's' : '') : 'less than a minute';
+
+    var banner = document.createElement('div');
+    banner.className = 'stale_data_banner';
+    banner.innerHTML = '📡 Showing cached data from ' + ageText + ' ago. Will refresh automatically.';
+
+    var header = document.querySelector('header');
+    if (header) {
+        header.parentNode.insertBefore(banner, header.nextSibling);
+    }
+
+    setTimeout(function() {
+        if (banner.parentNode) {
+            banner.remove();
+        }
+    }, 10000);
 }
 
 
@@ -177,7 +356,17 @@ var debouncedFilter = debounce(filterCoins, 200);
 // === AUTO-REFRESH ===
 
 function startAutoRefresh() {
-    lastUpdateTime = Date.now();
+    // Clear any existing timers first to prevent duplicates
+    if (refreshTimer) {
+        clearInterval(refreshTimer);
+    }
+    if (updateTextInterval) {
+        clearInterval(updateTextInterval);
+    }
+
+    if (!lastUpdateTime) {
+        lastUpdateTime = Date.now();
+    }
     updateLastUpdatedText();
 
     // Start the countdown indicator
@@ -219,16 +408,37 @@ function updateLastUpdatedText() {
 async function refreshData() {
     var indicator = document.getElementById('refresh-indicator');
 
+    // Check if we can make a request (rate limit protection)
+    if (!canMakeRequest()) {
+        console.log('Skipping refresh - rate limit protection');
+        resetRefreshIndicator();
+        return;
+    }
+
     try {
         if (indicator) {
             indicator.classList.remove('counting');
             indicator.classList.add('refreshing');
         }
 
+        lastRequestTime = Date.now();
         var response = await fetch(API_URL);
+
+        // Handle rate limit (429)
+        if (response.status === 429) {
+            handleRateLimit();
+            resetRefreshIndicator();
+            return;
+        }
+
         if (!response.ok) throw new Error('HTTP error! Status: ' + response.status);
 
         var data = await response.json();
+
+        // Success - reset backoff and update cache
+        resetBackoff();
+        hideRateLimitMessage();
+        setCachedData(data);
         currencyInfo = data;
 
         updateExistingCards(data);
@@ -466,30 +676,111 @@ function loadCoins() {
 // === DATA FETCHING ===
 
 async function fetchData() {
+    // First, try to show cached data immediately for faster perceived load
+    var cached = getCachedData();
+
+    if (cached && cached.data && cached.data.length > 0) {
+        currencyInfo = cached.data;
+        loadCoins();
+        hideLoading();
+
+        // If cache is still fresh, just start auto-refresh
+        if (!cached.isExpired) {
+            lastUpdateTime = cached.timestamp;
+            updateLastUpdatedText();
+            startAutoRefresh();
+            return;
+        }
+
+        // Cache is expired, update timestamp and fetch fresh data
+        lastUpdateTime = cached.timestamp;
+        updateLastUpdatedText();
+    }
+
+    // Check if we can make a request
+    if (!canMakeRequest()) {
+        if (cached && cached.data && currencyInfo.length) {
+            startAutoRefresh();
+            return;
+        }
+    }
+
     try {
+        lastRequestTime = Date.now();
         var response = await fetch(API_URL);
+
+        // Handle rate limit (429)
+        if (response.status === 429) {
+            handleRateLimit();
+
+            // If we already showed cached data, we're done
+            if (cached && cached.data && currencyInfo.length) {
+                startAutoRefresh();
+                return;
+            }
+
+            // No cached data - show error
+            hideLoading();
+            showApiError('Rate limit exceeded. Please wait a moment and try again.');
+            return;
+        }
+
         if (!response.ok) {
             throw new Error('HTTP error! Status: ' + response.status);
         }
 
         var data = await response.json();
+
+        // Successful response - reset backoff and update cache
+        resetBackoff();
+        setCachedData(data);
         currencyInfo = data;
 
-        loadCoins();
+        // If this is a fresh load (no cards yet), render them
+        if (!document.querySelector('.currency_placeholder')) {
+            loadCoins();
+        } else {
+            updateExistingCards(data);
+        }
+
         hideLoading();
+        lastUpdateTime = Date.now();
+        updateLastUpdatedText();
         startAutoRefresh();
 
     } catch (error) {
         console.error("Error fetching data:", error);
         hideLoading();
 
-        // Show error message to user
-        var mainContainer = document.querySelector('.main_container');
-        var errorDiv = document.createElement('div');
-        errorDiv.className = 'no_results';
-        errorDiv.innerHTML = '<p>⚠️ Could not load cryptocurrency data. Please try refreshing the page.</p>';
-        mainContainer.appendChild(errorDiv);
+        // Try to use cached data as fallback
+        if (cached && cached.data && !currencyInfo.length) {
+            currencyInfo = cached.data;
+            loadCoins();
+            lastUpdateTime = cached.timestamp;
+            updateLastUpdatedText();
+            showStaleDataMessage(cached.age);
+            startAutoRefresh();
+            return;
+        }
+
+        // No cached data - show error
+        if (!currencyInfo.length) {
+            showApiError('Could not load cryptocurrency data. Please try refreshing the page.');
+        }
     }
+}
+
+function showApiError(message) {
+    var mainContainer = document.querySelector('.main_container');
+    var existingError = mainContainer.querySelector('.no_results');
+    if (existingError) {
+        existingError.remove();
+    }
+
+    var errorDiv = document.createElement('div');
+    errorDiv.className = 'no_results api_error';
+    errorDiv.innerHTML = '<p>⚠️ ' + message + '</p>';
+    mainContainer.appendChild(errorDiv);
 }
 
 

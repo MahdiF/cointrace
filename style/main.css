@@ -515,6 +515,68 @@ footer {
 }
 
 
+/* === RATE LIMIT BANNERS === */
+
+.rate_limit_banner,
+.stale_data_banner {
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    animation: slideDown 0.3s ease-out;
+}
+
+.stale_data_banner {
+    background: linear-gradient(90deg, #ff9800 0%, #f57c00 100%);
+    color: white;
+}
+
+.rate_limit_banner {
+    background: linear-gradient(90deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+}
+
+.rate_limit_icon {
+    margin-right: 8px;
+}
+
+.rate_limit_countdown {
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 0 4px;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Dark mode adjustments for banners */
+[data-theme="dark"] .stale_data_banner {
+    background: linear-gradient(90deg, #ff9800 0%, #ef6c00 100%);
+}
+
+[data-theme="dark"] .rate_limit_banner {
+    background: linear-gradient(90deg, #ef5350 0%, #c62828 100%);
+}
+
+/* API error styling */
+.api_error p {
+    background: rgba(244, 67, 54, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+
 /* === DARK MODE TOGGLE === */
 
 .dark_mode_toggle {
