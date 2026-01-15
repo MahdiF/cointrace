@@ -11,7 +11,7 @@
 
     <!-- Prevent flash of wrong theme -->
     <script>
-        (function() {
+        (function () {
             var theme = localStorage.getItem('cointrace-theme');
             if (!theme) {
                 theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -57,41 +57,35 @@
 <body>
     <header>
         <div class="logo_and_nav">
-            <a href="https://cointrace.co" class="logo"></a>
-            <!-- <nav class="navigation">
-                <ul>
-                    <li class="nav_selected"><a href="/">Trending</a></li>
-                    <li><a href="/">Watch List</a></li>
-                    <li><a href="/">Portfolio</a></li>
-                </ul>
-            </nav> -->
-            <div class="creator">Created by <a href="https://twitter.com/MahdiF">@mahdif</a></div>
+            <a href="/" class="logo"></a>
+            <ul class="view_options">
+                <li>Arranged by market cap</li>
+                <li>24h change</li>
+                <li class="last_updated">
+                    <span id="last-updated-text">Updated just now</span>
+                    <span id="refresh-indicator" class="refresh_indicator"></span>
+                </li>
+                <li><button id="dark-mode-toggle" class="dark_mode_toggle" aria-label="Toggle dark mode">
+                        <span class="icon_sun">☀️</span>
+                        <span class="icon_moon">🌙</span>
+                    </button></li>
+            </ul>
         </div>
 
         <!-- Controls Bar -->
         <div class="controls_bar">
-            <div class="search_container">
-                <input type="text" id="search-input" class="search_input" placeholder="Search coins..." autocomplete="off">
-                <span class="search_icon">🔍</span>
-            </div>
+
             <div class="filter_buttons">
                 <button id="show-all-btn" class="filter_btn active">All</button>
-                <button id="show-favorites-btn" class="filter_btn">★ Favorites<span class="favorites_count"></span></button>
+                <button id="show-favorites-btn" class="filter_btn">★<span class="favorites_count"></span></button>
             </div>
-            <button id="dark-mode-toggle" class="dark_mode_toggle" aria-label="Toggle dark mode">
-                <span class="icon_sun">☀️</span>
-                <span class="icon_moon">🌙</span>
-            </button>
+            <div class="search_container">
+                <input type="text" id="search-input" class="search_input" placeholder="Search coins..."
+                    autocomplete="off">
+            </div>
         </div>
 
-        <ul class="view_options">
-            <li>Arranged by market cap</li>
-            <li>24h change</li>
-            <li class="last_updated">
-                <span id="last-updated-text">Updated just now</span>
-                <span id="refresh-indicator" class="refresh_indicator"></span>
-            </li>
-        </ul>
+
     </header>
     <div class="main_container">
         <div class="loading_icon"></div>
