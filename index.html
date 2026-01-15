@@ -9,6 +9,19 @@
     <link rel="stylesheet" href="style/main.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
 
+    <!-- Prevent flash of wrong theme -->
+    <script>
+        (function() {
+            var theme = localStorage.getItem('cointrace-theme');
+            if (!theme) {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
@@ -54,14 +67,30 @@
             </nav> -->
             <div class="creator">Created by <a href="https://twitter.com/MahdiF">@mahdif</a></div>
         </div>
+
+        <!-- Controls Bar -->
+        <div class="controls_bar">
+            <div class="search_container">
+                <input type="text" id="search-input" class="search_input" placeholder="Search coins..." autocomplete="off">
+                <span class="search_icon">🔍</span>
+            </div>
+            <div class="filter_buttons">
+                <button id="show-all-btn" class="filter_btn active">All</button>
+                <button id="show-favorites-btn" class="filter_btn">★ Favorites<span class="favorites_count"></span></button>
+            </div>
+            <button id="dark-mode-toggle" class="dark_mode_toggle" aria-label="Toggle dark mode">
+                <span class="icon_sun">☀️</span>
+                <span class="icon_moon">🌙</span>
+            </button>
+        </div>
+
         <ul class="view_options">
             <li>Arranged by market cap</li>
             <li>24h change</li>
-            <!-- <li>Prices are in $USD</li> -->
-            <!-- <li>
-                <p class="last_refereshed_text">Last refreshed 5 seconds ago</p>
-                <span class="last_refereshed_progress"></span>
-            </li> -->
+            <li class="last_updated">
+                <span id="last-updated-text">Updated just now</span>
+                <span id="refresh-indicator" class="refresh_indicator"></span>
+            </li>
         </ul>
     </header>
     <div class="main_container">
