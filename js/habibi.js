@@ -88,20 +88,20 @@ function addCurrency(
 function loadCoins() {
   for (let i = 0; i < currencyInfo.length; i++) {
     addCurrency(
-      currencyInfo[i].rank,
-      currencyInfo[i].symbol,
+      currencyInfo[i].market_cap_rank,
+      currencyInfo[i].symbol.toUpperCase(),
       currencyInfo[i].name,
-      currencyInfo[i].priceUsd,
-      currencyInfo[i].changePercent24Hr,
-      currencyInfo[i].marketCapUsd,
-      currencyInfo[i].volumeUsd24Hr,
-      currencyInfo[i].maxSupply
+      currencyInfo[i].current_price,
+      currencyInfo[i].price_change_percentage_24h,
+      currencyInfo[i].market_cap,
+      currencyInfo[i].total_volume,
+      currencyInfo[i].circulating_supply
     );
   }
 }
 
-// Define the API endpoint URL
-const apiUrl = "https://api.coincap.io/v2/assets";
+// Define the API endpoint URL (CoinGecko API)
+const apiUrl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1";
 
 // Fetch function to retrieve data
 async function fetchData() {
@@ -112,7 +112,7 @@ async function fetchData() {
     }
 
     const data = await response.json();
-    currencyInfo = data.data;
+    currencyInfo = data;
     loadCoins();
     hideLoading();
   } catch (error) {
